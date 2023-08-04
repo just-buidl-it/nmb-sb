@@ -5,8 +5,6 @@ import {ERC721, ERC721URIStorage} from "@openzeppelin/contracts/token/ERC721/ext
 import {Counters} from "@openzeppelin/contracts/utils/Counters.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
-import {Base64} from "@openzeppelin/contracts/utils/Base64.sol";
-
 
 contract Graffiti is ERC721URIStorage, Ownable {
     using Strings for uint256;
@@ -19,7 +17,9 @@ contract Graffiti is ERC721URIStorage, Ownable {
      * @notice On contract creation, assign authorship via an ENS name hash,
      *      set the ENS reverse registrar name for this contract.
      */
-    constructor() public ERC721("NMB Ethereum Argentina 23 Graffitis", "NMB23") {}
+    constructor()
+        ERC721("NMB Ethereum Argentina 23 Graffitis", "NMB23")
+    {}
 
     /**
      * @notice "Mint" graffiti token to a given address using its tokenUri.
@@ -43,11 +43,12 @@ contract Graffiti is ERC721URIStorage, Ownable {
     }
 
     function description() external view returns (string memory) {
-      return unicode'Para celebrar eth arg 2023 y la creación de la colección nfts “23 días sin lavarme” Las moscas ensuciaron 23 billeteras participantes de la conferencia. NMB <> 238';
+        return
+            unicode"Para celebrar eth arg 2023 y la creación de la colección nfts “23 días sin lavarme” Las moscas ensuciaron 23 billeteras participantes de la conferencia. NMB <> 238";
     }
 
     function externalLink() external view returns (string memory) {
-      return 'https://opensea.io/es/collection/moskas-238';
+        return "https://opensea.io/es/collection/moskas-238";
     }
 
     /**
@@ -56,23 +57,22 @@ contract Graffiti is ERC721URIStorage, Ownable {
      *      collection image.
      */
     function contractURI() external view returns (string memory) {
-        return string.concat(
-            "data:application/json;base64,",
-            Base64.encode(
-                abi.encodePacked('{',
-                    '"name": "NMB Ethereum Argentina 23 Graffitis",',
-                    '"author": "just-buidl-it",',
-                    '"description":',
-                    unicode'"Para celebrar eth arg 2023 y la creación de la colección nfts “23 días sin lavarme” Las moscas ensuciaron 23 billeteras participantes de la conferencia. NMB <> 238",',
-                    '"image": "ipfs://bafkreigchobeba3jwjwayofoasrk7iirsloryqbjtunrrwuecfh4dfozc4",',
-                    '"external_link": "https://opensea.io/es/collection/moskas-238"'
-                '}')
-            )
-        );
+        return
+            string.concat(
+                "data:application/json;utf8,",
+                "{",
+                '"name": "NMB Ethereum Argentina 23 Graffitis",',
+                '"author": "just-buidl-it",',
+                '"description":',
+                unicode'"Para celebrar eth arg 2023 y la creación de la colección nfts “23 días sin lavarme” Las moscas ensuciaron 23 billeteras participantes de la conferencia. NMB <> 238",',
+                '"image": "ipfs://bafkreigchobeba3jwjwayofoasrk7iirsloryqbjtunrrwuecfh4dfozc4",',
+                '"external_link": "https://opensea.io/es/collection/moskas-238"'
+                "}"
+            );
     }
 
     /**
-     * @notice Prevent the transfer of token because graffiti can not be transferred only removed.
+     * @notice Prevent the transfer of token because graffiti can only be removed.
      */
     function _beforeTokenTransfer(
         address from,
@@ -80,6 +80,9 @@ contract Graffiti is ERC721URIStorage, Ownable {
         uint256 firstTokenId,
         uint256 batchSize
     ) internal pure override {
-        require(from == address(0) || to == address(0), "Graffiti is non-transferrable");
+        require(
+            from == address(0) || to == address(0),
+            "Graffiti is non-transferrable"
+        );
     }
 }

@@ -72,12 +72,6 @@ contract Graffiti is ERC721URIStorage, Ownable {
         uint256 firstTokenId,
         uint256 batchSize
     ) internal pure override {
-        require(
-            from == address(0) ||
-                to == address(0) ||
-                firstTokenId > 0 ||
-                batchSize > 0,
-            "Graffiti is non-transferrable"
-        );
+        require(from == address(0) || to == address(0), "Graffiti is non-transferrable");
     }
 }

@@ -3,30 +3,48 @@ import {
 } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import svgs from './svgs';
 
 describe("Graffiti", function () {
   async function deployGraffitiFixture() {
-    const [owner, otherAccount] = await ethers.getSigners();
-
+    const [deployer, otherAccount] = await ethers.getSigners();
     const Graffiti = await ethers.getContractFactory("Graffiti");
     const graffiti = await Graffiti.deploy();
-
-    return { graffiti, owner, otherAccount };
+    const mockMetadataUrl = 'ifps://mockmetadata/url/0';
+    await graffiti.paint(otherAccount, mockMetadataUrl);
+    return { graffiti, deployer, otherAccount };
   }
 
   describe("Minting", function () {
     it("Should mint with correct metadata", async function () {
       const { graffiti, otherAccount } = await loadFixture(deployGraffitiFixture);
-      await graffiti.paint(otherAccount, svgs[0]);
-      expect(await graffiti.ownerOf(0)).to.equal(otherAccount.address);
-      const dataURI = await graffiti.tokenURI(0);
-      const json = atob(dataURI.substring(29));
-      const result = JSON.parse(json);
-      expect(result.name).to.equal("NMB0");
-      expect(result.description).to.equal("NMB");
-      expect(result.attributes).to.deep.equal([]);
-      expect(atob(result.image.substring(26))).to.equal(svgs[0])
+      const mockMetadataUrl = 'ifps://mockmetadata/url/1';
+      await graffiti.paint(otherAccount, mockMetadataUrl);
+      expect(await graffiti.ownerOf(1)).to.equal(otherAccount.address);
+      const dataURI = await graffiti.tokenURI(1);
+      expect(dataURI).to.equal(mockMetadataUrl);
+    });
+  });
+
+  describe("Cannot be transferred", function () {
+    it("Should mint with correct metadata", async function () {
+      const { graffiti, otherAccount, deployer } = await loadFixture(deployGraffitiFixture);
+
+      await expect(graffiti.connect(otherAccount)["safeTransferFrom(address,address,uint256)"](otherAccount.address, deployer.address, 0)).to.rejectedWith('Graffiti is non-transferrable');
+      await expect(graffiti.connect(otherAccount).transferFrom(otherAccount.address, deployer.address, 0)).to.rejectedWith('Graffiti is non-transferrable');
+    });
+  });
+
+  describe("Can be removed", function () {
+    it("Should not be removable by non owner", async function () {
+      const { graffiti } = await loadFixture(deployGraffitiFixture);
+      await expect(graffiti.remove(0)).to.rejectedWith('Only the owner can remove graffiti');
+    });
+
+    it("Should be removable by owner", async function () {
+      const { graffiti, otherAccount, deployer } = await loadFixture(deployGraffitiFixture);
+      console.log(await graffiti.ownerOf(0), otherAccount.address, deployer.address);
+      await graffiti.connect(otherAccount).remove(0);
+      await expect(graffiti.ownerOf(0)).to.rejectedWith('ERC721: invalid token ID');
     });
   });
 });

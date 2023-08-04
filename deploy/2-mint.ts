@@ -11,7 +11,11 @@ import { Graffiti } from "../typechain-types";
 const { NFT_STORAGE_KEY = '', TARGET_EOA, ETHERSCAN_API_KEY } = process.env;
 const MINT_NUM = 23;
 
-const fetchAddress = async (): Promise<string[]> => {
+const fetchAddress = async (networkName: string, testAccount: string): Promise<string[]> => {
+  if (networkName !== 'mainnet') {
+    // For testing mint three to deployer account
+    return [testAccount, testAccount, testAccount]
+  }
   const url = `https://api.etherscan.io/api?module=account&action=txlist&address=${TARGET_EOA}&page=1&offset=100&startblock=17630001&endblock=latest&sort=asc&apikey=${ETHERSCAN_API_KEY}`
   const res = await fetch(url);
   if (!res.ok) {
@@ -29,9 +33,11 @@ const fetchAddress = async (): Promise<string[]> => {
 }
 
 const func = async function (hre: HardhatRuntimeEnvironment) {
-  const addresses = await fetchAddress()
+  const { getNamedAccounts } = hre;
+  const { deployer } = await getNamedAccounts();
+  const addresses = await fetchAddress(hre.network.name, deployer)
 
-  const getDirPath = (fileName: string) => `images/${hre.network.name == 'mainnet' ? 'mainnet' : 'mainnet'}${fileName}`
+  const getDirPath = (fileName: string) => `images/${hre.network.name == 'mainnet' ? 'mainnet' : 'testnet'}${fileName}`
   const graffiti: Graffiti = await ethers.getContract("Graffiti");
 
   const files = await filesFromPaths([getDirPath('')])
@@ -49,7 +55,10 @@ const func = async function (hre: HardhatRuntimeEnvironment) {
     }
 
     // Upload metadata and mint NFT
+    console.log(`uploading metadata of ${name} at ${index}`)
     const metadataUri = await nftStorage.store(metadata)
+    
+    console.log(`minting ${name} to ${address}`)
     await graffiti.paint(address, metadataUri.url)
   }
 };

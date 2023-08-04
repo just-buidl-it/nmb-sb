@@ -19,25 +19,7 @@ contract Graffiti is ERC721URIStorage, Ownable {
      * @notice On contract creation, assign authorship via an ENS name hash,
      *      set the ENS reverse registrar name for this contract.
      */
-    constructor() public ERC721("23 dias sin lavarme", "NMB23") {}
-
-    /**
-     * @notice Get contract-level information, formatted as a dataURI containing a
-     *      JSON object with the contract name, author, description, and
-     *      collection image.
-     */
-    function contractURI() external view returns (string memory) {
-        return string.concat(
-            'data:application/json;base64,',
-            Base64.encode(
-                abi.encodePacked('{',
-                    unicode'"name": "", ',
-                    '"author": "", ',
-                    '"description": "", ',
-                '"}')
-            )
-        );
-    }
+    constructor() public ERC721("NMB Ethereum Argentina 23 Graffitis", "NMB23") {}
 
     /**
      * @notice "Mint" graffiti token to a given address using its tokenUri.
@@ -58,6 +40,27 @@ contract Graffiti is ERC721URIStorage, Ownable {
             "Only the owner can remove graffiti"
         );
         _burn(tokenId);
+    }
+
+    /**
+     * @notice Get contract-level information, formatted as a dataURI containing a
+     *      JSON object with the contract name, author, description, and
+     *      collection image.
+     */
+    function contractURI() external view returns (string memory) {
+        return string.concat(
+            "data:application/json;base64,",
+            Base64.encode(
+                abi.encodePacked('{',
+                    '"name": "NMB Ethereum Argentina 23 Graffitis",',
+                    '"author": "just-buidl-it",',
+                    '"description":',
+                    unicode'"Para celebrar eth arg 2023 y la creación de la colección nfts “23 días sin lavarme” Las moscas ensuciaron 23 billeteras participantes de la conferencia. NMB <> 238",',
+                    '"image": "ipfs://bafkreigchobeba3jwjwayofoasrk7iirsloryqbjtunrrwuecfh4dfozc4",',
+                    '"external_link": "https://opensea.io/es/collection/moskas-238"'
+                '}')
+            )
+        );
     }
 
     /**

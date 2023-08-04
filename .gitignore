@@ -9,3 +9,9 @@ typechain-types
 # Hardhat files
 cache
 artifacts
+deployments/localhost
+
+
+# Production files
+addresses.json
+images/mainnet

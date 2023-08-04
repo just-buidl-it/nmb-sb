@@ -42,6 +42,14 @@ contract Graffiti is ERC721URIStorage, Ownable {
         _burn(tokenId);
     }
 
+    function description() external view returns (string memory) {
+      return unicode'Para celebrar eth arg 2023 y la creación de la colección nfts “23 días sin lavarme” Las moscas ensuciaron 23 billeteras participantes de la conferencia. NMB <> 238';
+    }
+
+    function externalLink() external view returns (string memory) {
+      return 'https://opensea.io/es/collection/moskas-238';
+    }
+
     /**
      * @notice Get contract-level information, formatted as a dataURI containing a
      *      JSON object with the contract name, author, description, and

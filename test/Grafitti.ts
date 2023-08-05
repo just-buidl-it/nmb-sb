@@ -23,10 +23,23 @@ describe("Graffiti", function () {
       const dataURI = await graffiti.tokenURI(1);
       expect(dataURI).to.equal(mockMetadataUrl);
     });
+
+    it("Should only mint 23 tokens", async function () {
+      const { graffiti, otherAccount } = await loadFixture(deployGraffitiFixture);
+      let index = 0;
+      // Looping to mint 22 because the first is minted in the fixture
+      while (index < 22) {
+        const mockMetadataUrl = `ifps://mockmetadata/url/${index}`;
+        await graffiti.paint(otherAccount, mockMetadataUrl);
+        await graffiti.tokenURI(index);
+        index += 1;
+      }
+      await expect(graffiti.paint(otherAccount, 'metadataurl')).to.rejectedWith('Ran out of paint');
+    });
   });
 
   describe("Cannot be transferred", function () {
-    it("Should mint with correct metadata", async function () {
+    it("Should throw error when transferred", async function () {
       const { graffiti, otherAccount, deployer } = await loadFixture(deployGraffitiFixture);
 
       await expect(graffiti.connect(otherAccount)["safeTransferFrom(address,address,uint256)"](otherAccount.address, deployer.address, 0)).to.rejectedWith('Graffiti is non-transferrable');

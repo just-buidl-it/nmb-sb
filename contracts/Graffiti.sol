@@ -26,6 +26,7 @@ contract Graffiti is ERC721URIStorage, Ownable {
      */
     function paint(address to, string memory tokenUri) external onlyOwner {
         uint256 tokenId = _tokenIdCounter.current();
+        require(tokenId < 23, 'Ran out of paint');
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, tokenUri);

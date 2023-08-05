@@ -14,8 +14,7 @@ contract Graffiti is ERC721URIStorage, Ownable {
     Counters.Counter private _tokenIdCounter;
 
     /**
-     * @notice On contract creation, assign authorship via an ENS name hash,
-     *      set the ENS reverse registrar name for this contract.
+     * @notice Constructor
      */
     constructor()
         ERC721("NMB Ethereum Argentina 23 Graffitis", "NMB23")

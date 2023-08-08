@@ -47,7 +47,7 @@ contract Graffiti is ERC721URIStorage, Ownable {
      *      JSON object with the contract name, author, description, and
      *      collection image.
      */
-    function contractURI() external view returns (string memory) {
+    function contractURI() external pure returns (string memory) {
         return
             string.concat(
                 "data:application/json;utf8,",

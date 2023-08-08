@@ -55,7 +55,7 @@ describe("Graffiti", function () {
 
     it("Should be removable by owner", async function () {
       const { graffiti, otherAccount, deployer } = await loadFixture(deployGraffitiFixture);
-      console.log(await graffiti.ownerOf(0), otherAccount.address, deployer.address);
+
       await graffiti.connect(otherAccount).remove(0);
       await expect(graffiti.ownerOf(0)).to.rejectedWith('ERC721: invalid token ID');
     });

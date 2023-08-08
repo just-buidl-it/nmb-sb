@@ -2,6 +2,7 @@ import 'dotenv/config'
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import "@nomiclabs/hardhat-ethers"
+import "hardhat-gas-reporter"
 
 import 'hardhat-deploy'
 
@@ -26,6 +27,9 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY
+  },
+  gasReporter: {
+    enabled: true
   },
   // Hardhat deploy
   namedAccounts: {

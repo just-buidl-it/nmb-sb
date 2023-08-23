@@ -23,6 +23,10 @@ const config: HardhatUserConfig = {
     sepolia: {
       url: 'https://sepolia.gateway.tenderly.co',
       accounts: [`0x${process.env.PRIVATE_KEY}`],
+    },
+    mainnet: {
+      url: 'https://eth.llamarpc.com',
+      accounts: [`0x${process.env.PRIVATE_KEY}`],
     }
   },
   etherscan: {

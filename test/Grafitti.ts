@@ -60,4 +60,17 @@ describe("Graffiti", function () {
       await expect(graffiti.ownerOf(0)).to.rejectedWith('ERC721: invalid token ID');
     });
   });
+
+  describe("Metadata", function () {
+    it("Should return contract metadata", async function () {
+      const { graffiti } = await loadFixture(deployGraffitiFixture);
+      const contractMetadata = JSON.parse((await graffiti.contractURI()).replace('data:application/json;utf8,', ''));
+
+      expect(Object.keys(contractMetadata)).to.includes('name')
+      expect(Object.keys(contractMetadata)).to.includes('author')
+      expect(Object.keys(contractMetadata)).to.includes('description')
+      expect(Object.keys(contractMetadata)).to.includes('external_link')
+      expect(Object.keys(contractMetadata)).to.includes('image')
+    });
+  })
 });

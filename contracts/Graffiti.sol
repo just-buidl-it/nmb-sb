@@ -16,16 +16,14 @@ contract Graffiti is ERC721URIStorage, Ownable {
     /**
      * @notice Constructor
      */
-    constructor()
-        ERC721("NMB Ethereum Argentina 23 Graffitis", "NMB23")
-    {}
+    constructor() ERC721("NMB Ethereum Argentina 23 Graffitis", "NMB23") {}
 
     /**
      * @notice "Mint" graffiti token to a given address using its tokenUri.
      */
     function paint(address to, string memory tokenUri) external onlyOwner {
         uint256 tokenId = _tokenIdCounter.current();
-        require(tokenId < 23, 'Ran out of paint');
+        require(tokenId < 23, "Ran out of paint");
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, tokenUri);
